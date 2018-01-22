@@ -239,9 +239,6 @@ class InventoryTransaction{
 	protected function sendInventories() : void{
 		foreach($this->inventories as $inventory){
 			$inventory->sendContents($this->source);
-			if($inventory instanceof PlayerInventory){
-				$inventory->sendArmorContents($this->source);
-			}
 		}
 	}
 

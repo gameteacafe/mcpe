@@ -2077,7 +2077,7 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 		$this->sendData($this);
 
 		$this->inventory->sendContents($this);
-		$this->inventory->sendArmorContents($this);
+		$this->armorInventory->sendContents($this);
 		$this->inventory->sendCreativeContents();
 		$this->inventory->sendHeldItem($this);
 
@@ -2669,7 +2669,7 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 
 				$this->sendSettings();
 				$this->inventory->sendContents($this);
-				$this->inventory->sendArmorContents($this);
+				$this->armorInventory->sendContents($this);
 
 				$this->spawnToAll();
 				$this->scheduleUpdate();
@@ -3567,15 +3567,6 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 		return false; //never flag players for despawn
 	}
 
-	public function getArmorPoints() : int{
-		$total = 0;
-		foreach($this->inventory->getArmorContents() as $item){
-			$total += $item->getDefensePoints();
-		}
-
-		return $total;
-	}
-
 	protected function applyPostDamageEffects(EntityDamageEvent $source) : void{
 		parent::applyPostDamageEffects($source);
 
@@ -3674,6 +3665,8 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 
 	protected function addDefaultWindows(){
 		$this->addWindow($this->getInventory(), ContainerIds::INVENTORY, true);
+
+		$this->addWindow($this->getArmorInventory(), ContainerIds::ARMOR, true);
 
 		$this->cursorInventory = new PlayerCursorInventory($this);
 		$this->addWindow($this->cursorInventory, ContainerIds::CURSOR, true);
@@ -3811,9 +3804,6 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 	protected function sendAllInventories(){
 		foreach($this->windowIndex as $id => $inventory){
 			$inventory->sendContents($this);
-			if($inventory instanceof PlayerInventory){
-				$inventory->sendArmorContents($this);
-			}
 		}
 	}
 
